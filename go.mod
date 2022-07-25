@@ -21,6 +21,5 @@ require (
 	github.com/loov/hrtime v1.0.3
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/ungerik/go3d v0.0.0-20220309204530-55ced4bcb334
-	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
