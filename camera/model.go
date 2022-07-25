@@ -36,6 +36,12 @@ type Camera struct {
 	//with a fixed projection-width, every width/height px produces the same image, just less sharp (or more)
 	ProjectionWidth float64
 
+	//will be calculated from width and the image dimensions
+	ProjectionHeight float64
+
+	ProjectionScale    float64
+	ProjectionScaleInv float64
+
 	//lenscorrection warps the image before/after the necessary transformations are finished, so its on top of everything else
 	//can be nil -> no lenscorrection will be applied
 	LensCorrection *float64
@@ -67,6 +73,13 @@ func FromDto(dto *CameraDto) *Camera {
 		Rotation:       dto.Rotation,
 		LensCorrection: dto.LensCorrection,
 
+		SensorWidth:        dto.SensorWidth,
+		FocalLength:        dto.FocalLength,
+		ProjectionWidth:    dto.ProjectionWidth,
+		ProjectionHeight:   h * dto.ProjectionWidth / w,
+		ProjectionScale:    w / dto.ProjectionWidth,
+		ProjectionScaleInv: 1 / (w / dto.ProjectionWidth),
+
 		Width:              w,
 		Height:             h,
 		widthOffsetCenter:  w / 2.0,
@@ -87,6 +100,7 @@ func FromDto(dto *CameraDto) *Camera {
 	c.LToProjectionArea = (dto.ProjectionWidth / 2.0) / math.Tan(c.ViewingAngleWidth/2.0)
 
 	pointOnProjectionPlane := c.sightDirection.Scaled(c.LToProjectionArea / c.sightDirection.Length())
+	pointOnProjectionPlane.Add(&c.Eye)
 
 	//fill plane
 	c.projectionArea = plane.Plane{
@@ -94,17 +108,19 @@ func FromDto(dto *CameraDto) *Camera {
 		NormalVector: &c.sightDirection,
 	}
 
-	//y axis
-	intersection := c.projectionArea.CaluclateIntersection(&c.Eye, &vec3.T{0.0, 0.0, -1.0})
+	rotationPoint := pointOnProjectionPlane.Added(&vec3.T{0, 1, 0})
 
-	yAxis := vec3.Sub(&intersection, &c.LooksThrough)
+	//y axis
+	intersection := c.projectionArea.CaluclateIntersection(&c.Eye, &rotationPoint)
+
+	yAxis := vec3.Sub(&intersection, &pointOnProjectionPlane)
 	yAxis.Normalize()
 
 	///rotate, xaxis will be rotated automatically as it depends on yAxis
 	c.yAxis = *mathext.RotateVecAxis(&yAxis, &c.sightDirection, &c.Rotation)
 
 	//x axis
-	xAxis := vec3.Cross(&c.yAxis, &c.sightDirection)
+	xAxis := vec3.Cross(&c.sightDirection, &c.yAxis)
 	xAxis.Normalize()
 
 	c.xAxis = xAxis
