@@ -16,7 +16,7 @@ import (
 	"github.com/ungerik/go3d/float64/vec3"
 )
 
-func TestRoom(t *testing.T) {
+func TestRoom_1(t *testing.T) {
 	//#region GENERATE GRAPHIC FOR DRAWING
 
 	tmp := (20.0 / (math.Sqrt(3) / 2)) / 2 //gleichseitiges dreieck - halbe höhe
