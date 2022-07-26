@@ -14,6 +14,13 @@ func GenVec2(x, y float64) JsonVector2 {
 	}
 }
 
+func GenVec2FromGo3d(item *vec2.T) JsonVector2 {
+	return JsonVector2{
+		X: item[0],
+		Y: item[1],
+	}
+}
+
 func (item *JsonVector2) GenVec() vec2.T {
 	return vec2.T{item.X, item.Y}
 }
