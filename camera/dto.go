@@ -28,6 +28,7 @@ type CameraDto struct {
 
 	//lenscorrection warps the image before/after the necessary transformations are finished, so its on top of everything else
 	//can be nil -> no lenscorrection will be applied
+	//plausible from -1 to 1
 	LensCorrection *float64 `json:"LensCorrection"`
 
 	//can be nil when lenscorrection is set -> will then be width/2 and height/2

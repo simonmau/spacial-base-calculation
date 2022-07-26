@@ -9,6 +9,7 @@ import (
 	drawingprecision "github.com/simonmau/spacial-base-calculation/drawing-precision"
 	"github.com/simonmau/spacial-base-calculation/dto"
 	"github.com/simonmau/spacial-base-calculation/line"
+	"github.com/simonmau/spacial-base-calculation/mathext"
 	"github.com/simonmau/spacial-base-calculation/point"
 	rangegen "github.com/simonmau/spacial-base-calculation/range-gen"
 	"github.com/simonmau/spacial-base-calculation/triangle"
@@ -58,8 +59,9 @@ func TestRoom(t *testing.T) {
 			FocalLength:     70,
 			ProjectionWidth: 100,
 			Rotation:        0,
-			Width:           640,
-			Height:          360,
+			Width:           1920,
+			Height:          1080,
+			LensCorrection:  mathext.GetPointer(1.0),
 		}
 
 		cam := camera.FromDto(&camDto)
@@ -79,7 +81,7 @@ func TestRoom(t *testing.T) {
 
 				img[index] = 255
 				img[index+1] = 0
-				img[index+2] = 0
+				img[index+2] = 255
 			}
 		}
 
