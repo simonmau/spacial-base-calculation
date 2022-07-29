@@ -1,11 +1,29 @@
 package lenscorrection
 
-import "github.com/ungerik/go3d/float64/vec2"
+import (
+	"math"
+
+	"github.com/ungerik/go3d/float64/vec2"
+)
 
 func convertImageToRelativeCoordiantes(point *vec2.T, width, height *float64) vec2.T {
-	return vec2.T{2.0*point[0] / *width - 1.0, 2.0*point[1] / *height - 1.0}
+	biggerSize := math.Max(*width, *height)
+
+	invSize := 1.0 / (biggerSize / 2.0)
+
+	x := point[0] - (*width / 2.0)
+	y := point[1] - (*height / 2.0)
+
+	return vec2.T{x * invSize, y * invSize}
 }
 
 func convertRelativeToImageCoordinates(relative *vec2.T, width, height *float64) vec2.T {
-	return vec2.T{(relative[0] + 1.0) * *width * 0.5, (relative[1] + 1.0) * *height * 0.5}
+	biggerSize := math.Max(*width, *height)
+
+	size := biggerSize / 2.0
+
+	x := relative[0] * size
+	y := relative[1] * size
+
+	return vec2.T{x + (*width / 2.0), y + (*height / 2.0)}
 }

@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/simonmau/spacial-base-calculation/dto"
+	"github.com/simonmau/spacial-base-calculation/mathext"
 	"github.com/stretchr/testify/assert"
 	vec2 "github.com/ungerik/go3d/float64/vec2"
 	"github.com/ungerik/go3d/float64/vec3"
@@ -80,4 +81,28 @@ func TestProjection(t *testing.T) {
 
 	assert.InDelta(t, 1920/2, backConverted[0], 0.00001)
 	assert.InDelta(t, 1080/2, backConverted[1], 0.00001)
+}
+
+func TestProjectionWithLensCorrection(t *testing.T) {
+	camDto := CameraDto{
+		Eye:                  dto.JsonVector3{X: 20, Y: 20, Z: 200},
+		LooksThrough:         dto.JsonVector3{X: 0, Y: 0, Z: 0},
+		Rotation:             0,
+		SensorWidth:          36,
+		FocalLength:          50,
+		ProjectionWidth:      100,
+		LensCorrection:       mathext.GetPointer(2.0),
+		LensCorrectionCenter: nil,
+		Width:                1920,
+		Height:               1080,
+	}
+
+	cam := FromDto(&camDto)
+
+	projectedPoint := cam.ConvertImagePointToPlanePoint(&vec2.T{100.0, 100.0})
+
+	backConverted := cam.ProjectPointIntoImage(&projectedPoint)
+
+	assert.InDelta(t, 100.0, backConverted[0], 0.00001)
+	assert.InDelta(t, 100.0, backConverted[1], 0.00001)
 }

@@ -91,6 +91,86 @@ func TestRoom_1(t *testing.T) {
 
 		time.Sleep(time.Millisecond * 250)
 	}
+	//#endregion DRAW IMAGE
+}
+
+func TestRoom_2(t *testing.T) {
+	//#region GENERATE GRAPHIC FOR DRAWING
+
+	rX := rangegen.GenLinearRangeArray(mathext.GetPointer(-1000.0), mathext.GetPointer(1000.0), mathext.GetPointer(25.0))
+
+	lines := make([]line.Line, 0)
+
+	for _, x := range rX {
+		lines = append(lines, *line.GenerateWithTwoPoints(&vec3.T{x, -1000, 0}, &vec3.T{x, 1000, 0}))
+	}
+
+	for _, y := range rX {
+		lines = append(lines, *line.GenerateWithTwoPoints(&vec3.T{-1000, y, 0}, &vec3.T{1000, y, 0}))
+	}
+
+	dp := drawingprecision.GenDrawPrecByPointsPerUnit(10)
+
+	edgePoints := make([]vec3.T, 0)
+
+	for _, line := range lines {
+		line.GenerateEdgePoints(dp, &edgePoints)
+	}
+
+	//#endregion GENERATE GRAPHIC FOR DRAWING
+
+	//#region GENERATE CAMERA
+
+	minY := 0.0
+	maxY := 800.0
+	steps := 20.0
+
+	yRange := rangegen.GenLinearRangeArray(&minY, &maxY, &steps)
+
+	for _, y := range yRange {
+		eyeVec := vec3.T{0, y, 500}
+		eyeVec.Normalize()
+		eyeVec.Scale(800.0)
+
+		camDto := camera.CameraDto{
+			Eye:             dto.JsonVector3{X: eyeVec[0], Y: eyeVec[1], Z: eyeVec[2]},
+			LooksThrough:    dto.JsonVector3{X: 0.0, Y: 0.0, Z: 0.0},
+			SensorWidth:     36,
+			FocalLength:     40,
+			ProjectionWidth: 100,
+			Rotation:        0,
+			Width:           1920,
+			Height:          1080,
+			LensCorrection:  mathext.GetPointer(1.5),
+		}
+
+		cam := camera.FromDto(&camDto)
+
+		//#endregion GENERATE CAMERA
+
+		//#region DRAW IMAGE
+
+		img := make([]byte, camDto.Width*camDto.Height*3)
+
+		for _, spacePt := range edgePoints {
+			imgPtFloat := cam.ProjectPointIntoImage(&spacePt)
+			imgPt := point.FromVector(&imgPtFloat)
+
+			if imgPt.InRange(&camDto.Width, &camDto.Height) {
+				index := imgPt.ToIndex(&camDto.Width, 3)
+
+				img[index] = 255
+				img[index+1] = 0
+				img[index+2] = 255
+			}
+		}
+
+		rgbaImage := byteToRgbImage(&img, int(camDto.Width), int(camDto.Height))
+
+		saveImageRgba("output.png", rgbaImage)
+
+		time.Sleep(time.Millisecond * 250)
+	}
 
 	//#endregion DRAW IMAGE
 }

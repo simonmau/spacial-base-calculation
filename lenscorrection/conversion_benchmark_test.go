@@ -3,6 +3,7 @@ package lenscorrection
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/ungerik/go3d/float64/vec2"
 )
 
@@ -28,6 +29,7 @@ func BenchmarkConversions(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		sexyPt := CorrectRawToSexy(&item.P, &item.Point, &width, &height)
 
+		assert.NotNil(b, sexyPt)
 		if sexyPt != nil {
 			_ = CorrectSexyToRaw(&item.P, sexyPt, &width, &height)
 		}

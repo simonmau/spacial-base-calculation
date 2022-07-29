@@ -24,7 +24,7 @@ func (c *Camera) ConvertPlanePointToImagePoint(pt *vec3.T) vec2.T {
 	tmp := vec2.T{lx + c.widthOffsetCenter, ly + c.heightOffsetCenter}
 
 	if c.LensCorrection != nil && c.LensCorrectionCenter != nil {
-		tmp = *advancedlenscorrection.CorrectRawToSexy(c.LensCorrection, &tmp, c.LensCorrectionCenter, &c.Width, &c.Height)
+		tmp = *advancedlenscorrection.CorrectSexyToRaw(c.LensCorrection, &tmp, c.LensCorrectionCenter, &c.Width, &c.Height)
 	} else if c.LensCorrection != nil {
 		tmp = *lenscorrection.CorrectSexyToRaw(c.LensCorrection, &tmp, &c.Width, &c.Height)
 	}

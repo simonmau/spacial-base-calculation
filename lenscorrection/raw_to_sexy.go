@@ -1,23 +1,30 @@
 package lenscorrection
 
-import "github.com/ungerik/go3d/float64/vec2"
+import (
+	"github.com/ungerik/go3d/float64/vec2"
+)
 
-// p sould not be much bigger than 1
+const (
+	_a = -0.063026124053362
+	_b = 1.05272839776571
+	_c = -1.27267833812949
+	_d = 0.386857312388595
+
+	_errorTolerance = 0.00001
+)
+
+// p sould not be much bigger than 1 - LIMIT AT 0 IS HARD-> NO VALUES
 func CorrectRawToSexy(p *float64, point *vec2.T, width, height *float64) *vec2.T {
 	relativeCoordinates := convertImageToRelativeCoordiantes(point, width, height)
 
+	r2 := relativeCoordinates.LengthSqr()
 	r := relativeCoordinates.Length()
 
-	//http://paulbourke.net/miscellaneous/imagewarp/imagewarp.c
-	denomInv := 1.0 / (1.0 - *p*r)
+	// rN := r2*_a + r*_b + *p*r2*_c + *p*r*_d
+	rN := r + r2**p //kinda approximation
 
-	xtmp := relativeCoordinates[0] * denomInv
-	ytmp := relativeCoordinates[1] * denomInv
+	corr := relativeCoordinates.Scaled(rN / r)
 
-	if xtmp <= -1.0 || xtmp >= 1.0 || ytmp <= -1 || ytmp >= 1 {
-		return nil
-	}
-
-	tmp := convertRelativeToImageCoordinates(relativeCoordinates.Scale(denomInv), width, height)
+	tmp := convertRelativeToImageCoordinates(&corr, width, height)
 	return &tmp
 }
