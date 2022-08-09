@@ -37,10 +37,7 @@ func TestDifference(t *testing.T) {
 
 	for _, tc := range testData {
 		value := Difference(tc.oldAngle, tc.newAngle)
-
-		diff := math.Abs(value - tc.expected)
-
-		assert.Less(t, diff, float32(0.01))
+		assert.InDelta(t, tc.expected, value, 0.01)
 	}
 }
 
@@ -61,11 +58,11 @@ func TestDifferenceWithDirection(t *testing.T) {
 			oldAngle:  0.0,
 			direction: true,
 			newAngle:  1.5,
-			expected:  -1.5,
+			expected:  1.5,
 		},
 		{
 			oldAngle:  0.0,
-			direction: true,
+			direction: false,
 			newAngle:  4,
 			expected:  2.28,
 		},
@@ -79,21 +76,29 @@ func TestDifferenceWithDirection(t *testing.T) {
 			oldAngle:  0.0,
 			direction: false,
 			newAngle:  1.5,
-			expected:  1.5,
+			expected:  -1.5,
 		},
 		{
 			oldAngle:  0.0,
 			direction: false,
 			newAngle:  4.0,
-			expected:  -2.28,
+			expected:  2.28,
 		},
 	}
 
 	for _, tc := range testData {
 		value := DifferenceWithDirection(tc.oldAngle, tc.newAngle, tc.direction)
+		assert.InDelta(t, tc.expected, value, 0.01)
+	}
+}
 
-		diff := math.Abs(value - tc.expected)
+//makes 1000 runs per operation -> divide result by 1000
+func BenchmarkDifferenceWithDirection(b *testing.B) {
+	_ = DifferenceWithDirection(0, math.Pi, true)
 
-		assert.Less(t, diff, 0.01)
+	for i := 0; i < b.N; i++ {
+		for y := 1.0; y < 1000.0; y++ {
+			_ = DifferenceWithDirection(0, y, true)
+		}
 	}
 }

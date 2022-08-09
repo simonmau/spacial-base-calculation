@@ -23,7 +23,9 @@ func GenLinearRangeArray(minRange, maxRange, steps *float64) []float64 {
 	diff := *maxRange - *minRange
 	stepSize := diff / *steps
 
-	for i := *minRange + stepSize; i < *maxRange; i += stepSize {
+	max := *maxRange - (stepSize * 0.5)
+
+	for i := *minRange + stepSize; i < max; i += stepSize {
 		resArray = append(resArray, i)
 	}
 

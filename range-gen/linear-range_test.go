@@ -18,7 +18,7 @@ func TestRangeGenArray_1(t *testing.T) {
 	assert.Equal(t, 10, len(data))
 
 	for i := 1; i <= 10; i++ {
-		assert.Equal(t, float64(i), data[i])
+		assert.Equal(t, float64(i), data[i-1])
 	}
 }
 

@@ -24,8 +24,8 @@ func DifferenceWithDirection(old, new float64, clockwise bool) float64 {
 	}
 
 	if clockwise {
-		return -mod
+		return mod
 	}
 
-	return mod
+	return -mod
 }
