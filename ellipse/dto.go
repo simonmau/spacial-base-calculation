@@ -6,8 +6,8 @@ import (
 )
 
 type EllipseDto struct {
-	EllipseData *Data              `json:"EllipseData" validate:"required"`
-	Points      *[]dto.JsonVector2 `json:"Points" validate:"required"`
+	EllipseData *Data              `json:"ellipseData" validate:"required"`
+	Points      *[]dto.JsonVector2 `json:"points" validate:"required"`
 }
 
 func (data *EllipseDto) GetPoints() []vec2.T {

@@ -8,7 +8,7 @@ import (
 )
 
 func TestJsonVec2(t *testing.T) {
-	jsonData := `{"X":754.2811822753854,"Y":474.46299706322134}`
+	jsonData := `{"x":754.2811822753854,"y":474.46299706322134}`
 
 	resVec := JsonVector2{}
 

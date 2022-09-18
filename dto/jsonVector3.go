@@ -3,9 +3,9 @@ package dto
 import "github.com/ungerik/go3d/float64/vec3"
 
 type JsonVector3 struct {
-	X float64 `json:"X" validate:"required"`
-	Y float64 `json:"Y" validate:"required"`
-	Z float64 `json:"Z" validate:"required"`
+	X float64 `json:"x" validate:"required"`
+	Y float64 `json:"y" validate:"required"`
+	Z float64 `json:"z" validate:"required"`
 }
 
 func GenVec3(x, y, z float64) JsonVector3 {
